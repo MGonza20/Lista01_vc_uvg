@@ -3,23 +3,26 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 
-def plot_eq(img, eq=False):
+def plot_eq(img, eq=False, opencv=False):
     _, ax = plt.subplots(1, 2, figsize=(12, 6))
-    title = 'Imagen ecualizada' if eq else 'Imagen con escala de grises'
-    title2 = 'Histograma con distribución ecualizada' if eq else 'Histograma'
-    title3 = 'Distribución Acumulada Ecualizada' if eq else 'Distribución Acumulada'
+    title = 'Imagen ecualizada' if eq or opencv else 'Imagen con escala de grises'
+    title2 = 'Histograma con distribución ecualizada' if eq or opencv else 'Histograma'
+    title3 = 'Distribución Acumulada Ecualizada' if eq or opencv else 'Distribución Acumulada'
 
     hist, _ = np.histogram(img.flatten(), 256, [0,256])
     fda = hist.cumsum() # Funcion de distribucion acumulada (FDA)
 
-    if eq:
-        fda_norm = (fda - fda.min()) * 255 / (fda.max() - fda.min())
+    if not opencv:
+        if eq:
+            fda_norm = (fda - fda.min()) * 255 / (fda.max() - fda.min())
 
-        img = fda_norm[img.flatten()].reshape(img.shape) # Mapeando los valores de la imagen
-        hist, _ = np.histogram(img.flatten(), 256, [0,256])
-        fda = hist.cumsum()
-        
-    fda_norm = fda * hist.max() / fda.max()
+            img = fda_norm[img.flatten()].reshape(img.shape) # Mapeando los valores de la imagen
+            hist, _ = np.histogram(img.flatten(), 256, [0,256])
+            fda = hist.cumsum()
+            
+        fda_norm = fda * hist.max() / fda.max()
+    else:
+        fda_norm = fda * hist.max() / fda.max()
 
 
     ax[0].imshow(img, cmap='gray')
