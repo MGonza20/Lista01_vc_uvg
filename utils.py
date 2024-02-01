@@ -20,9 +20,7 @@ def plot_eq(img, eq=False, opencv=False):
             hist, _ = np.histogram(img.flatten(), 256, [0,256])
             fda = hist.cumsum()
             
-        fda_norm = fda * hist.max() / fda.max()
-    else:
-        fda_norm = fda * hist.max() / fda.max()
+    fda_norm = fda * hist.max() / fda.max()
 
 
     ax[0].imshow(img, cmap='gray')
